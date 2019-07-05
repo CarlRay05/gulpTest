@@ -1,0 +1,14 @@
+:root {
+    --bg: #cccccc;
+}
+
+$bgColor: #000000;
+
+body {
+    background-color: var(--bg);
+}
+
+body {
+    background: $bgColor;
+    color: #fff;
+}
