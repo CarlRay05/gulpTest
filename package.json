@@ -1,0 +1,24 @@
+{
+  "name": "gulptest",
+  "version": "1.0.0",
+  "description": "Example Gulp app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarlRay05/gulpTest.git"
+  },
+  "author": "Carl Ray",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CarlRay05/gulpTest/issues"
+  },
+  "homepage": "https://github.com/CarlRay05/gulpTest#readme",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-imagemin": "^6.0.0"
+  },
+  "dependencies": {}
+}
