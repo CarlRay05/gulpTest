@@ -1,5 +1,7 @@
 const gulp = require('gulp');
-const imagemin = require('gulp-imagemin');
+const image = require('gulp-image');
+const uglify = require('gulp-uglify');
+const sass = require('gulp-sass');
 
 /*
 	-- Top Level Functions --
@@ -22,13 +24,26 @@ gulp.task('copyHTML', function(){
 });
 
 // Optimized Images
-gulp.task('imagemin', () =>
-    gulp.src('src/images/*')
-        .pipe(imagemin())
-        .pipe(gulp.dest('build/images'))
-);
 
-gulp.task('default', function(){
-	return console.log('Gulp is Running...');
+gulp.task('image', function () {
+	gulp.src('src/images/*')
+	  .pipe(image())
+	  .pipe(gulp.dest('build/images'));
 });
+
+// Minify JS
+gulp.task('minify', function(){
+	gulp.src('src/js/*.js')
+		.pipe(uglify())
+		.pipe(gulp.dest('build/js'));
+});
+
+// Compile Sass
+gulp.task('sass', function(){
+	gulp.src('src/sass/*.scss')
+		.pipe(sass({outputStyle:'compressed'}).on('error', sass.logError))
+		.pipe(gulp.dest('build/css'));
+});
+
+gulp.task('default', ['message', 'copyHTML', 'image', 'minify', 'sass']);
 
