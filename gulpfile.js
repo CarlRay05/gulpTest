@@ -2,48 +2,62 @@ const gulp = require('gulp');
 const image = require('gulp-image');
 const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
+const concat = require('gulp-concat');
 
 /*
-	-- Top Level Functions --
-	gulp.task - Define tasks
-	gulp.src - Point to files to use
-	gulp.build - Point to folder to output
-	gulp.watch - Watch files and folders for changes
-	gulp.dest - Where to piper files and folders
+  -- TOP LEVEL FUNCTIONS --
+  gulp.task - Define tasks
+  gulp.src - Point to files to use
+  gulp.dest - Points to folder to output
+  gulp.watch - Watch files and folders for changes
 */
 
-// Logs message
+// Logs Message
 gulp.task('message', function(){
-	return console.log('Gulp is Running...');
+  return console.log('Gulp is running...');
 });
 
-// Copy all HTML files
-gulp.task('copyHTML', function(){
-	gulp.src('src/*.html')
-		.pipe(gulp.dest('build'));
+// Copy All HTML files
+gulp.task('copyHtml', function(){
+  gulp.src('src/*.html')
+      .pipe(gulp.dest('dist'));
 });
 
-// Optimized Images
-
-gulp.task('image', function () {
+// Optimize Images
+gulp.task('image', () =>
 	gulp.src('src/images/*')
-	  .pipe(image())
-	  .pipe(gulp.dest('build/images'));
-});
+		.pipe(image())
+		.pipe(gulp.dest('dist/images'))
+);
 
 // Minify JS
 gulp.task('minify', function(){
-	gulp.src('src/js/*.js')
-		.pipe(uglify())
-		.pipe(gulp.dest('build/js'));
+  gulp.src('src/js/*.js')
+      .pipe(uglify())
+      .pipe(gulp.dest('dist/js'));
 });
 
 // Compile Sass
 gulp.task('sass', function(){
-	gulp.src('src/sass/*.scss')
-		.pipe(sass({outputStyle:'compressed'}).on('error', sass.logError))
-		.pipe(gulp.dest('build/css'));
+  gulp.src('src/sass/*.scss')
+      .pipe(sass().on('error', sass.logError))
+      .pipe(gulp.dest('dist/css'));
 });
 
-gulp.task('default', ['message', 'copyHTML', 'image', 'minify', 'sass']);
+// Scripts 
+gulp.task('scripts', function() {
+	gulp.src('src/js/*.js')
+		.pipe(concat('main.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('default', ['message', 'copyHtml', 'image', 'sass', 'scripts']);
+
+gulp.task('watch', function(){
+	gulp.watch('src/js/*.js', ['scripts']);
+	gulp.watch('src/images/*', ['image']);
+	gulp.watch('src/sass/*.scss', ['sass']);
+	gulp.watch('src/*.html' ,['copyHtml']);
+});
 
