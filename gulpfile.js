@@ -1,63 +1,30 @@
 const gulp = require('gulp');
-const image = require('gulp-image');
-const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
-const concat = require('gulp-concat');
+const browserSync = require('browser-sync').create();
 
-/*
-  -- TOP LEVEL FUNCTIONS --
-  gulp.task - Define tasks
-  gulp.src - Point to files to use
-  gulp.dest - Points to folder to output
-  gulp.watch - Watch files and folders for changes
-*/
+// compile scss into css
+function style() {
+	// 1. where is my css file 
+	return gulp.src('./src/scss/**/*.scss')
+	// 2. pass that file through sass compiler
+	.pipe(sass().on('error', sass.logError))
+	// 3. where do I save that complied CSS?
+	.pipe(gulp.dest('build/css'))
+	// 4.) stream changes to all browserSync
+	.pipe(browserSync.stream())
+}	
 
-// Logs Message
-gulp.task('message', function(){
-  return console.log('Gulp is running...');
-});
+function watch() {
+	browserSync.init({
+		server: {
+			baseDir: './'
+		}
+	});
+	gulp.watch('./src/scss/**/*.scss', style);
+	gulp.watch('./*.html').on('change',browserSync.reload);
+	gulp.watch('./src/js/**/*.js').on('change',browserSync.reload);
+}
 
-// Copy All HTML files
-gulp.task('copyHtml', function(){
-  gulp.src('src/*.html')
-      .pipe(gulp.dest('dist'));
-});
-
-// Optimize Images
-gulp.task('image', () =>
-	gulp.src('src/images/*')
-		.pipe(image())
-		.pipe(gulp.dest('dist/images'))
-);
-
-// Minify JS
-gulp.task('minify', function(){
-  gulp.src('src/js/*.js')
-      .pipe(uglify())
-      .pipe(gulp.dest('dist/js'));
-});
-
-// Compile Sass
-gulp.task('sass', function(){
-  gulp.src('src/sass/*.scss')
-      .pipe(sass().on('error', sass.logError))
-      .pipe(gulp.dest('dist/css'));
-});
-
-// Scripts 
-gulp.task('scripts', function() {
-	gulp.src('src/js/*.js')
-		.pipe(concat('main.js'))
-		.pipe(uglify())
-		.pipe(gulp.dest('dist/js'));
-});
-
-gulp.task('default', ['message', 'copyHtml', 'image', 'sass', 'scripts']);
-
-gulp.task('watch', function(){
-	gulp.watch('src/js/*.js', ['scripts']);
-	gulp.watch('src/images/*', ['image']);
-	gulp.watch('src/sass/*.scss', ['sass']);
-	gulp.watch('src/*.html' ,['copyHtml']);
-});
+exports.style = style; 
+exports.watch = watch;
 
